@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Model
+namespace ProjAndreAirlinesAPI.Model
 {
     public class Endereco
     {
@@ -14,7 +14,7 @@ namespace Model
         public string Logradouro { get; set; }
 
         [JsonProperty("Numero")]
-        public string Numero { get; set; }
+        public int Numero { get; set; }
 
         [JsonProperty("Bairro")]
         public string Bairro { get; set; }
@@ -32,23 +32,5 @@ namespace Model
         public string Complemento { get; set; }
 
         public Endereco() { }
-
-        public Endereco(int id, string cep, string logradouro, string numero, string bairro, string localidade, string uf, string pais, string complemento)
-        {
-            Id = id;
-            Cep = cep;
-            Logradouro = logradouro;
-            Numero = numero;
-            Bairro = bairro;
-            Localidade = localidade;
-            Uf = uf;
-            Pais = pais;
-            Complemento = complemento;
-        }
-
-        public override string ToString()
-        {
-            return $"{Cep} {Logradouro} {Numero} {Bairro} {Localidade} {Uf} {Pais} {Complemento}";
-        }
     }
 }

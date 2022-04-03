@@ -2,7 +2,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Model;
+using ProjAndreAirlinesAPI.Model;
 using Newtonsoft.Json;
 
 namespace ProjAndreAirlinesAPI.Service
@@ -11,21 +11,23 @@ namespace ProjAndreAirlinesAPI.Service
     {
         public static async Task<Endereco> ConsultarCep(string cep)
         {
-            try
+            using (var client = new HttpClient())
             {
-                using var client = new HttpClient();
+                try
+                {
+                    client.BaseAddress = new System.Uri("https://viacep.com.br/");
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(
+                        new MediaTypeWithQualityHeaderValue("application/json"));
 
-                client.BaseAddress = new System.Uri("https://viacep.com.br/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var response = await client.GetAsync($"ws/{cep}/json/");
 
-                var response = await client.GetAsync($"ws/{cep}/json/");
-
-                return await response.Content.ReadFromJsonAsync<Endereco>();
-            }
-            catch (HttpRequestException e)
-            {
-                throw new HttpRequestException("Exception: " + e.Message);
+                    return await response.Content.ReadFromJsonAsync<Endereco>();
+                }
+                catch (HttpRequestException exception)
+                {
+                    throw new HttpRequestException("Exception: " + exception.Message);
+                }
             }
         }
     }

@@ -9,7 +9,7 @@ namespace GeradorDeDados.Service
 {
     internal class AndreAirlinesApiService
     {
-        public static async Task CadadastrarVoo(Voo voo)
+        public static async Task CadadastrarVoo(Passagem passagem)
         {
             using (var httpClient = new HttpClient())
             {
@@ -20,11 +20,11 @@ namespace GeradorDeDados.Service
                     httpClient.DefaultRequestHeaders.Accept.Add(
                         new MediaTypeWithQualityHeaderValue("application/json"));
 
-                    var response = await httpClient.PostAsJsonAsync($"api/Voos", voo);
+                    var response = await httpClient.PostAsJsonAsync($"api/Passagens", passagem);
                 }
-                catch (Exception e)
+                catch (Exception exception)
                 {
-                    Console.WriteLine("Exception: " + e.Message);
+                    Console.WriteLine("Exception: " + exception.Message);
                 }
             }
         }

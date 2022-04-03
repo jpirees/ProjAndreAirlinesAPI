@@ -10,7 +10,7 @@ using ProjAndreAirlinesAPI.Data;
 namespace ProjAndreAirlinesAPI.Migrations
 {
     [DbContext(typeof(ProjAndreAirlinesAPIContext))]
-    [Migration("20220401122521_initialMigration")]
+    [Migration("20220403040016_initialMigration")]
     partial class initialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,7 @@ namespace ProjAndreAirlinesAPI.Migrations
                 .HasAnnotation("ProductVersion", "5.0.15")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Model.Aeronave", b =>
+            modelBuilder.Entity("ProjAndreAirlinesAPI.Model.Aeronave", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -37,12 +37,12 @@ namespace ProjAndreAirlinesAPI.Migrations
                     b.ToTable("Aeronave");
                 });
 
-            modelBuilder.Entity("Model.Aeroporto", b =>
+            modelBuilder.Entity("ProjAndreAirlinesAPI.Model.Aeroporto", b =>
                 {
                     b.Property<string>("Sigla")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("EnderecoId")
+                    b.Property<int?>("EnderecoId")
                         .HasColumnType("int");
 
                     b.Property<string>("Nome")
@@ -55,7 +55,22 @@ namespace ProjAndreAirlinesAPI.Migrations
                     b.ToTable("Aeroporto");
                 });
 
-            modelBuilder.Entity("Model.Endereco", b =>
+            modelBuilder.Entity("ProjAndreAirlinesAPI.Model.Classe", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Descricao")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Classe");
+                });
+
+            modelBuilder.Entity("ProjAndreAirlinesAPI.Model.Endereco", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -77,8 +92,8 @@ namespace ProjAndreAirlinesAPI.Migrations
                     b.Property<string>("Logradouro")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Numero")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Numero")
+                        .HasColumnType("int");
 
                     b.Property<string>("Pais")
                         .HasColumnType("nvarchar(max)");
@@ -91,7 +106,7 @@ namespace ProjAndreAirlinesAPI.Migrations
                     b.ToTable("Endereco");
                 });
 
-            modelBuilder.Entity("Model.Passageiro", b =>
+            modelBuilder.Entity("ProjAndreAirlinesAPI.Model.Passageiro", b =>
                 {
                     b.Property<string>("Cpf")
                         .HasColumnType("nvarchar(450)");
@@ -102,7 +117,7 @@ namespace ProjAndreAirlinesAPI.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EnderecoId")
+                    b.Property<int?>("EnderecoId")
                         .HasColumnType("int");
 
                     b.Property<string>("Nome")
@@ -118,15 +133,50 @@ namespace ProjAndreAirlinesAPI.Migrations
                     b.ToTable("Passageiro");
                 });
 
-            modelBuilder.Entity("Model.Voo", b =>
+            modelBuilder.Entity("ProjAndreAirlinesAPI.Model.Passagem", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ClasseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PassageiroCpf")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int?>("VooId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClasseId");
+
+                    b.HasIndex("PassageiroCpf");
+
+                    b.HasIndex("VooId");
+
+                    b.ToTable("Passagem");
+                });
+
+            modelBuilder.Entity("ProjAndreAirlinesAPI.Model.Voo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AeronaveId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("DestinoId")
+                    b.Property<string>("DestinoSigla")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("HorarioDesembarque")
@@ -135,72 +185,78 @@ namespace ProjAndreAirlinesAPI.Migrations
                     b.Property<DateTime>("HorarioEmbarque")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("OrigemId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("PassageiroCpf")
+                    b.Property<string>("OrigemSigla")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AeronaveId");
 
-                    b.HasIndex("DestinoId");
+                    b.HasIndex("DestinoSigla");
 
-                    b.HasIndex("OrigemId");
-
-                    b.HasIndex("PassageiroCpf");
+                    b.HasIndex("OrigemSigla");
 
                     b.ToTable("Voo");
                 });
 
-            modelBuilder.Entity("Model.Aeroporto", b =>
+            modelBuilder.Entity("ProjAndreAirlinesAPI.Model.Aeroporto", b =>
                 {
-                    b.HasOne("Model.Endereco", "Endereco")
+                    b.HasOne("ProjAndreAirlinesAPI.Model.Endereco", "Endereco")
                         .WithMany()
-                        .HasForeignKey("EnderecoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EnderecoId");
 
                     b.Navigation("Endereco");
                 });
 
-            modelBuilder.Entity("Model.Passageiro", b =>
+            modelBuilder.Entity("ProjAndreAirlinesAPI.Model.Passageiro", b =>
                 {
-                    b.HasOne("Model.Endereco", "Endereco")
+                    b.HasOne("ProjAndreAirlinesAPI.Model.Endereco", "Endereco")
                         .WithMany()
-                        .HasForeignKey("EnderecoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EnderecoId");
 
                     b.Navigation("Endereco");
                 });
 
-            modelBuilder.Entity("Model.Voo", b =>
+            modelBuilder.Entity("ProjAndreAirlinesAPI.Model.Passagem", b =>
                 {
-                    b.HasOne("Model.Aeronave", "Aeronave")
+                    b.HasOne("ProjAndreAirlinesAPI.Model.Classe", "Classe")
+                        .WithMany()
+                        .HasForeignKey("ClasseId");
+
+                    b.HasOne("ProjAndreAirlinesAPI.Model.Passageiro", "Passageiro")
+                        .WithMany()
+                        .HasForeignKey("PassageiroCpf");
+
+                    b.HasOne("ProjAndreAirlinesAPI.Model.Voo", "Voo")
+                        .WithMany()
+                        .HasForeignKey("VooId");
+
+                    b.Navigation("Classe");
+
+                    b.Navigation("Passageiro");
+
+                    b.Navigation("Voo");
+                });
+
+            modelBuilder.Entity("ProjAndreAirlinesAPI.Model.Voo", b =>
+                {
+                    b.HasOne("ProjAndreAirlinesAPI.Model.Aeronave", "Aeronave")
                         .WithMany()
                         .HasForeignKey("AeronaveId");
 
-                    b.HasOne("Model.Aeroporto", "Destino")
+                    b.HasOne("ProjAndreAirlinesAPI.Model.Aeroporto", "Destino")
                         .WithMany()
-                        .HasForeignKey("DestinoId");
+                        .HasForeignKey("DestinoSigla");
 
-                    b.HasOne("Model.Aeroporto", "Origem")
+                    b.HasOne("ProjAndreAirlinesAPI.Model.Aeroporto", "Origem")
                         .WithMany()
-                        .HasForeignKey("OrigemId");
-
-                    b.HasOne("Model.Passageiro", "Passageiro")
-                        .WithMany()
-                        .HasForeignKey("PassageiroCpf");
+                        .HasForeignKey("OrigemSigla");
 
                     b.Navigation("Aeronave");
 
                     b.Navigation("Destino");
 
                     b.Navigation("Origem");
-
-                    b.Navigation("Passageiro");
                 });
 #pragma warning restore 612, 618
         }

@@ -23,18 +23,19 @@ namespace GeradorDeDados
 
         public static async Task RunAsync()
         {
-            Console.WriteLine("Extraindo e adicionando dados...");
+            var caminho = @"C:\Users\Junior\Desktop\dados.json";
 
-            var pathFile = @"C:\Users\Junior\Desktop\testes.json";
-            await AdicionarVoos(ReadFile.ExtrairDados(pathFile));
+            Console.WriteLine("Extraindo dados e adicionando no banco...");
+
+            await AdicionarNoBanco(ReadFile.ExtrairDados(caminho));
 
             Console.WriteLine("Adicionado com sucesso");
         }
 
-        public async static Task AdicionarVoos(List<Voo> voos)
+        public async static Task AdicionarNoBanco(List<Passagem> passagens)
         {
-            foreach (var voo in voos)
-                await AndreAirlinesApiService.CadadastrarVoo(voo);
+            foreach (var passagem in passagens)
+                await AndreAirlinesApiService.CadadastrarVoo(passagem);
         }
     }
 }

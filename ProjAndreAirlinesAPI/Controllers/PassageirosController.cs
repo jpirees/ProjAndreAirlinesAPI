@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Model;
+using ProjAndreAirlinesAPI.Model;
 using ProjAndreAirlinesAPI.Data;
 using ProjAndreAirlinesAPI.Service;
 
@@ -26,15 +26,15 @@ namespace ProjAndreAirlinesAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Passageiro>>> GetPassageiro()
         {
-            return await _context.Passageiro.Include(p => p.Endereco).ToListAsync();
+            return await _context.Passageiro.Include(passageiro => passageiro.Endereco).ToListAsync();
         }
 
         // GET: api/Passageiros/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Passageiro>> GetPassageiro(string id)
         {
-            var passageiro = await _context.Passageiro.Include(e => e.Endereco)
-                                                      .Where(p => p.Cpf == id)
+            var passageiro = await _context.Passageiro.Include(passageiro => passageiro.Endereco)
+                                                      .Where(passageiro => passageiro.Cpf == id)
                                                       .FirstOrDefaultAsync();
 
             if (passageiro == null)
@@ -81,7 +81,13 @@ namespace ProjAndreAirlinesAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Passageiro>> PostPassageiro(Passageiro passageiro)
         {
-           
+            var endereco = await ViaCepService.ConsultarCep(passageiro.Endereco.Cep);
+
+            if (endereco != null)
+                endereco.Numero = passageiro.Endereco.Numero;
+
+            passageiro.Endereco = endereco;
+
             _context.Passageiro.Add(passageiro);
 
             try

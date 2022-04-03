@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Model;
+using ProjAndreAirlinesAPI.Model;
 
 namespace ProjAndreAirlinesAPI.Data
 {
@@ -23,5 +23,9 @@ namespace ProjAndreAirlinesAPI.Data
         public DbSet<Model.Aeronave> Aeronave { get; set; }
 
         public DbSet<Model.Voo> Voo { get; set; }
+
+        public DbSet<ProjAndreAirlinesAPI.Model.Classe> Classe { get; set; }
+
+        public DbSet<ProjAndreAirlinesAPI.Model.Passagem> Passagem { get; set; }
     }
 }

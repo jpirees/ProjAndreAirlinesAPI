@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Model
+namespace ProjAndreAirlinesAPI.Model
 {
     public class Voo
     {
-        [Key]
         [JsonProperty("Id")]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [JsonProperty("Origem")]
         public virtual Aeroporto Origem { get; set; }
@@ -29,9 +27,6 @@ namespace Model
 
         [JsonProperty("HorarioDesembarque")]
         public DateTime HorarioDesembarque { get; set; }
-
-        [JsonProperty("Passageiro")]
-        public virtual Passageiro Passageiro { get; set; }
 
         public Voo() { }
 

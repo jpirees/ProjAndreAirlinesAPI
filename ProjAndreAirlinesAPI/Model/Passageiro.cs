@@ -1,9 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
-namespace Model
+namespace ProjAndreAirlinesAPI.Model
 {
     public class Passageiro
     {
@@ -27,15 +26,5 @@ namespace Model
         public virtual Endereco Endereco { get; set; }
 
         public Passageiro() { }
-
-        public Passageiro(string cpf, string nome, DateTime dataNasc, string email, string telefone, Endereco endereco)
-        {
-            Cpf = cpf;
-            Nome = nome;
-            DataNasc = dataNasc;
-            Email = email;
-            Telefone = telefone;
-            Endereco = endereco;
-        }
     }
 }

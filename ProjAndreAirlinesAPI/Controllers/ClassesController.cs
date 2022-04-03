@@ -5,54 +5,54 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProjAndreAirlinesAPI.Model;
 using ProjAndreAirlinesAPI.Data;
+using ProjAndreAirlinesAPI.Model;
 
 namespace ProjAndreAirlinesAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EnderecosController : ControllerBase
+    public class ClassesController : ControllerBase
     {
         private readonly ProjAndreAirlinesAPIContext _context;
 
-        public EnderecosController(ProjAndreAirlinesAPIContext context)
+        public ClassesController(ProjAndreAirlinesAPIContext context)
         {
             _context = context;
         }
 
-        // GET: api/Enderecos
+        // GET: api/Classes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Endereco>>> GetEndereco()
+        public async Task<ActionResult<IEnumerable<Classe>>> GetClasse()
         {
-            return await _context.Endereco.ToListAsync();
+            return await _context.Classe.ToListAsync();
         }
 
-        // GET: api/Enderecos/5
+        // GET: api/Classes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Endereco>> GetEndereco(int id)
+        public async Task<ActionResult<Classe>> GetClasse(int id)
         {
-            var endereco = await _context.Endereco.FindAsync(id);
+            var classe = await _context.Classe.FindAsync(id);
 
-            if (endereco == null)
+            if (classe == null)
             {
                 return NotFound();
             }
 
-            return endereco;
+            return classe;
         }
 
-        // PUT: api/Enderecos/5
+        // PUT: api/Classes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEndereco(int id, Endereco endereco)
+        public async Task<IActionResult> PutClasse(int id, Classe classe)
         {
-            if (id != endereco.Id)
+            if (id != classe.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(endereco).State = EntityState.Modified;
+            _context.Entry(classe).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +60,7 @@ namespace ProjAndreAirlinesAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!EnderecoExists(id))
+                if (!ClasseExists(id))
                 {
                     return NotFound();
                 }
@@ -73,38 +73,36 @@ namespace ProjAndreAirlinesAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Enderecos
+        // POST: api/Classes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Endereco>> PostEndereco(Endereco endereco)
+        public async Task<ActionResult<Classe>> PostClasse(Classe classe)
         {
-           
-            _context.Endereco.Add(endereco);
-
+            _context.Classe.Add(classe);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetEndereco", new { id = endereco.Id }, endereco);
+            return CreatedAtAction("GetClasse", new { id = classe.Id }, classe);
         }
 
-        // DELETE: api/Enderecos/5
+        // DELETE: api/Classes/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEndereco(int id)
+        public async Task<IActionResult> DeleteClasse(int id)
         {
-            var endereco = await _context.Endereco.FindAsync(id);
-            if (endereco == null)
+            var classe = await _context.Classe.FindAsync(id);
+            if (classe == null)
             {
                 return NotFound();
             }
 
-            _context.Endereco.Remove(endereco);
+            _context.Classe.Remove(classe);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool EnderecoExists(int id)
+        private bool ClasseExists(int id)
         {
-            return _context.Endereco.Any(e => e.Id == id);
+            return _context.Classe.Any(e => e.Id == id);
         }
     }
 }

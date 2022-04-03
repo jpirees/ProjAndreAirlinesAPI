@@ -9,11 +9,11 @@ namespace File
 {
     public class ReadFile
     {
-        public static List<Voo> ExtrairDados(string pathFile)
+        public static List<Passagem>? ExtrairDados(string pathFile)
         {
             StreamReader reader = new(pathFile);
             var jsonString = reader.ReadToEnd();
-            var dados = JsonConvert.DeserializeObject<List<Voo>>(jsonString) as List<Voo>;
+            var dados = JsonConvert.DeserializeObject<List<Passagem>>(jsonString) as List<Passagem>;
 
             return dados ?? null;
         }

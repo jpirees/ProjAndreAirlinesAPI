@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Model;
+using ProjAndreAirlinesAPI.Model;
 using ProjAndreAirlinesAPI.Data;
 
 namespace ProjAndreAirlinesAPI.Controllers

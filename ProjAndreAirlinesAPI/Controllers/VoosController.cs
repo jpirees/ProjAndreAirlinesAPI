@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Model;
 using ProjAndreAirlinesAPI.Data;
 using ProjAndreAirlinesAPI.Service;
+using ProjAndreAirlinesAPI.Model;
 
 namespace ProjAndreAirlinesAPI.Controllers
 {
@@ -26,22 +26,20 @@ namespace ProjAndreAirlinesAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Voo>>> GetVoo()
         {
-            return await _context.Voo.Include(a => a.Aeronave)
-                                     .Include(oe => oe.Origem.Endereco)
-                                     .Include(de => de.Destino.Endereco)
-                                     .Include(pe => pe.Passageiro.Endereco)
+            return await _context.Voo.Include(voo => voo.Aeronave)
+                                     .Include(voo => voo.Origem.Endereco)
+                                     .Include(voo => voo.Destino.Endereco)
                                      .ToListAsync();
         }
 
         // GET: api/Voos/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Voo>> GetVoo(string id)
+        public async Task<ActionResult<Voo>> GetVoo(int id)
         {
-            var voo = await _context.Voo.Include(a => a.Aeronave)
-                                        .Include(oe => oe.Origem.Endereco)
-                                        .Include(de => de.Destino.Endereco)
-                                        .Include(pe => pe.Passageiro.Endereco)
-                                        .Where(v => v.Id == id)
+            var voo = await _context.Voo.Include(voo => voo.Aeronave)
+                                        .Include(voo => voo.Origem.Endereco)
+                                        .Include(voo => voo.Destino.Endereco)
+                                        .Where(voo => voo.Id == id)
                                         .FirstOrDefaultAsync();
 
             if (voo == null)
@@ -55,7 +53,7 @@ namespace ProjAndreAirlinesAPI.Controllers
         // PUT: api/Voos/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutVoo(string id, Voo voo)
+        public async Task<IActionResult> PutVoo(int id, Voo voo)
         {
             if (id != voo.Id)
             {
@@ -88,14 +86,15 @@ namespace ProjAndreAirlinesAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Voo>> PostVoo(Voo voo)
         {
+            Endereco endereco;
+
             var aeronave = await _context.Aeronave.Where(a => a.Id == voo.Aeronave.Id)
                                                   .FirstOrDefaultAsync();
-            if (aeronave != null)
-                voo.Aeronave = aeronave;
+
+            voo.Aeronave = aeronave ?? voo.Aeronave;
 
             var aeroportoOrigem = await _context.Aeroporto.Where(ao => ao.Sigla == voo.Origem.Sigla)
                                                           .FirstOrDefaultAsync();
-            Endereco endereco;
 
             if (aeroportoOrigem != null)
                 voo.Origem = aeroportoOrigem;
@@ -116,16 +115,6 @@ namespace ProjAndreAirlinesAPI.Controllers
                 voo.Destino.Endereco = endereco;
             }
 
-            var passageiro = await _context.Passageiro.Where(p => p.Cpf == voo.Passageiro.Cpf)
-                                                      .FirstOrDefaultAsync();
-
-            if (passageiro != null)
-                voo.Passageiro = passageiro;
-            else if ((endereco = await ViaCepService.ConsultarCep(voo.Passageiro.Endereco.Cep)) != null)
-            {
-                endereco.Numero = voo.Passageiro.Endereco.Numero;
-                voo.Passageiro.Endereco = endereco;
-            }
 
             _context.Voo.Add(voo);
 
@@ -164,7 +153,7 @@ namespace ProjAndreAirlinesAPI.Controllers
             return NoContent();
         }
 
-        private bool VooExists(string id)
+        private bool VooExists(int id)
         {
             return _context.Voo.Any(e => e.Id == id);
         }
