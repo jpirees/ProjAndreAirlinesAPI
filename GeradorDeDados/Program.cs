@@ -82,7 +82,7 @@ namespace GeradorDeDados
             Console.WriteLine("---------- Menu ----------");
             Console.WriteLine("1. Extrair dados");
             Console.WriteLine("2. Relatórios");
-            Console.WriteLine("0. Relatórios");
+            Console.WriteLine("0. Voltar");
 
             return Console.ReadLine();
         }
