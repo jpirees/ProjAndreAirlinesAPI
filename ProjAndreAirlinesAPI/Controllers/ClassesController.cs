@@ -78,7 +78,10 @@ namespace ProjAndreAirlinesAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Classe>> PostClasse(Classe classe)
         {
+
+
             _context.Classe.Add(classe);
+
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetClasse", new { id = classe.Id }, classe);

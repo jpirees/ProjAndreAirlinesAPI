@@ -32,5 +32,11 @@ namespace ProjAndreAirlinesAPI.Model
         public string Complemento { get; set; }
 
         public Endereco() { }
+
+        public Endereco(string cep, int numero)
+        {
+            Cep = cep;
+            Numero = numero;
+        }
     }
 }

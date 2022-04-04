@@ -78,7 +78,6 @@ namespace ProjAndreAirlinesAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Endereco>> PostEndereco(Endereco endereco)
         {
-           
             _context.Endereco.Add(endereco);
 
             await _context.SaveChangesAsync();

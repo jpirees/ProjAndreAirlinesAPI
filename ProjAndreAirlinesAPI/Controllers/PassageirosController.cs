@@ -81,12 +81,21 @@ namespace ProjAndreAirlinesAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Passageiro>> PostPassageiro(Passageiro passageiro)
         {
-            var endereco = await ViaCepService.ConsultarCep(passageiro.Endereco.Cep);
+
+            var passageiroExiste = await _context.Passageiro.Where(passageiroDB => passageiroDB.Cpf.Equals(passageiro.Cpf))
+                                                            .FirstOrDefaultAsync();
+
+            if (passageiroExiste != null)
+                throw new Exception("Passageiro já cadastrado!");
+
+            Endereco endereco = await ViaCepService.ConsultarCep(passageiro.Endereco.Cep);
 
             if (endereco != null)
+            {
+                endereco.Cep = endereco.Cep.Replace("-", "");
                 endereco.Numero = passageiro.Endereco.Numero;
-
-            passageiro.Endereco = endereco;
+                passageiro.Endereco = endereco;
+            }
 
             _context.Passageiro.Add(passageiro);
 

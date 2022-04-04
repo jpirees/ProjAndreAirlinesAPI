@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjAndreAirlinesAPI.Data;
+using ProjAndreAirlinesAPI.DTO;
 using ProjAndreAirlinesAPI.Model;
 using ProjAndreAirlinesAPI.Service;
 
@@ -88,45 +89,29 @@ namespace ProjAndreAirlinesAPI.Controllers
         // POST: api/Passagens
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Passagem>> PostPassagem(Passagem passagem)
+        public async Task<ActionResult<Passagem>> PostPassagem(PassagemDTO passagem)
         {
-            Endereco endereco;
-
-            Voo voo = await _context.Voo.Where(voo => voo.Id == passagem.Voo.Id)
+            Voo voo = await _context.Voo.Where(voo => voo.Id == passagem.VooId)
                                         .FirstOrDefaultAsync();
 
-            passagem.Voo = voo ?? passagem.Voo;
+            if (voo == null)
+                throw new Exception("Voo não encontrado!");
 
 
-            Aeroporto aeroportoOrigem = await _context.Aeroporto.Where(aeroporto => aeroporto.Sigla == passagem.Voo.Origem.Sigla)
-                                        .FirstOrDefaultAsync();
-
-            passagem.Voo.Origem = aeroportoOrigem ?? passagem.Voo.Origem;
-
-            Aeroporto aeroportoDestino = await _context.Aeroporto.Where(aeroporto => aeroporto.Sigla == passagem.Voo.Destino.Sigla)
-                                        .FirstOrDefaultAsync();
-            passagem.Voo.Destino = aeroportoDestino ?? passagem.Voo.Destino;
-
-            var passageiro = await _context.Passageiro.Where(passageiro => passageiro.Cpf == passagem.Passageiro.Cpf)
+            var passageiro = await _context.Passageiro.Where(passageiro => passageiro.Cpf == passagem.PassageiroCpf)
                                                       .FirstOrDefaultAsync();
 
+            if (passageiro == null)
+                throw new Exception("Passageiro não encontrado!");
 
 
-            if (passageiro != null)
-                passagem.Passageiro = passageiro;
-            else if ((endereco = await ViaCepService.ConsultarCep(passagem.Passageiro.Endereco.Cep)) != null)
-            {
-                endereco.Cep.Replace("-", "");
-                endereco.Numero = passagem.Passageiro.Endereco.Numero;
-                passagem.Passageiro.Endereco = endereco;
-            }
-
-            var classe = await _context.Classe.Where(classe => classe.Id == passagem.Classe.Id)
+            var classe = await _context.Classe.Where(classe => classe.Id == passagem.ClasseId)
                                               .FirstOrDefaultAsync();
 
-            passagem.Classe = classe ?? passagem.Classe;
+            if (classe == null)
+                throw new Exception("Classe não encontrada!");
 
-            _context.Passagem.Add(passagem);
+            _context.Passagem.Add(new Passagem(passagem.VooId, passagem.PassageiroCpf, passagem.ClasseId, passagem.Valor, passagem.DataCadastro));
 
             await _context.SaveChangesAsync();
 

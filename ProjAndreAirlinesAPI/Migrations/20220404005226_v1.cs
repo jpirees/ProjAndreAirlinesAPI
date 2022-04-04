@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ProjAndreAirlinesAPI.Migrations
 {
-    public partial class initialMigration : Migration
+    public partial class v1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -135,9 +135,9 @@ namespace ProjAndreAirlinesAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    VooId = table.Column<int>(type: "int", nullable: true),
+                    VooId = table.Column<int>(type: "int", nullable: false),
                     PassageiroCpf = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ClasseId = table.Column<int>(type: "int", nullable: true),
+                    ClasseId = table.Column<int>(type: "int", nullable: false),
                     Valor = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     DataCadastro = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -149,7 +149,7 @@ namespace ProjAndreAirlinesAPI.Migrations
                         column: x => x.ClasseId,
                         principalTable: "Classe",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Passagem_Passageiro_PassageiroCpf",
                         column: x => x.PassageiroCpf,
@@ -161,7 +161,7 @@ namespace ProjAndreAirlinesAPI.Migrations
                         column: x => x.VooId,
                         principalTable: "Voo",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

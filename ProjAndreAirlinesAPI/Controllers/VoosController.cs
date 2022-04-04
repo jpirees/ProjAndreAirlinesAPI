@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ProjAndreAirlinesAPI.Data;
 using ProjAndreAirlinesAPI.Service;
 using ProjAndreAirlinesAPI.Model;
+using ProjAndreAirlinesAPI.DTO;
 
 namespace ProjAndreAirlinesAPI.Controllers
 {
@@ -84,39 +85,29 @@ namespace ProjAndreAirlinesAPI.Controllers
         // POST: api/Voos
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Voo>> PostVoo(Voo voo)
+        public async Task<ActionResult<Voo>> PostVoo(VooDTO voo)
         {
-            Endereco endereco;
+            var aeronave = await _context.Aeronave.Where(aeronave => aeronave.Id.Equals(voo.AeronaveId))
+                                                        .FirstOrDefaultAsync();
 
-            var aeronave = await _context.Aeronave.Where(a => a.Id == voo.Aeronave.Id)
-                                                  .FirstOrDefaultAsync();
-
-            voo.Aeronave = aeronave ?? voo.Aeronave;
-
-            var aeroportoOrigem = await _context.Aeroporto.Where(ao => ao.Sigla == voo.Origem.Sigla)
-                                                          .FirstOrDefaultAsync();
-
-            if (aeroportoOrigem != null)
-                voo.Origem = aeroportoOrigem;
-            else if ((endereco = await ViaCepService.ConsultarCep(voo.Origem.Endereco.Cep)) != null)
-            {
-                endereco.Numero = voo.Origem.Endereco.Numero;
-                voo.Origem.Endereco = endereco;
-            }
-
-            var aeroportoDestino = await _context.Aeroporto.Where(ad => ad.Sigla == voo.Destino.Sigla)
-                                                           .FirstOrDefaultAsync();
-
-            if (aeroportoDestino != null)
-                voo.Destino = aeroportoDestino;
-            else if ((endereco = await ViaCepService.ConsultarCep(voo.Destino.Endereco.Cep)) != null)
-            {
-                endereco.Numero = voo.Destino.Endereco.Numero;
-                voo.Destino.Endereco = endereco;
-            }
+            if (aeronave == null)
+                throw new Exception("Aeronave não encontrada!");
 
 
-            _context.Voo.Add(voo);
+            var origem = await _context.Aeroporto.Where(origem => origem.Sigla.Equals(voo.OrigemSigla))
+                                                        .FirstOrDefaultAsync();
+
+            if (origem == null)
+                throw new Exception("Aeroporto de origem não encontrado!");
+
+            var destino = await _context.Aeroporto.Where(destino => destino.Sigla.Equals(voo.DestinoSigla))
+                                                        .FirstOrDefaultAsync();
+
+            if (destino == null)
+                throw new Exception("Aeroporto de destino não encontrado!");
+
+
+            _context.Voo.Add(new Voo(voo.OrigemSigla, voo.DestinoSigla, voo.AeronaveId, voo.HorarioEmbarque, voo.HorarioDesembarque));
 
             try
             {

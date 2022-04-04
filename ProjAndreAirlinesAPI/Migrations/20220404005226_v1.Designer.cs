@@ -10,8 +10,8 @@ using ProjAndreAirlinesAPI.Data;
 namespace ProjAndreAirlinesAPI.Migrations
 {
     [DbContext(typeof(ProjAndreAirlinesAPIContext))]
-    [Migration("20220403062012_initialMigration")]
-    partial class initialMigration
+    [Migration("20220404005226_v1")]
+    partial class v1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -140,7 +140,7 @@ namespace ProjAndreAirlinesAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ClasseId")
+                    b.Property<int>("ClasseId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DataCadastro")
@@ -152,7 +152,7 @@ namespace ProjAndreAirlinesAPI.Migrations
                     b.Property<decimal>("Valor")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<int?>("VooId")
+                    b.Property<int>("VooId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -221,7 +221,9 @@ namespace ProjAndreAirlinesAPI.Migrations
                 {
                     b.HasOne("ProjAndreAirlinesAPI.Model.Classe", "Classe")
                         .WithMany()
-                        .HasForeignKey("ClasseId");
+                        .HasForeignKey("ClasseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ProjAndreAirlinesAPI.Model.Passageiro", "Passageiro")
                         .WithMany()
@@ -229,7 +231,9 @@ namespace ProjAndreAirlinesAPI.Migrations
 
                     b.HasOne("ProjAndreAirlinesAPI.Model.Voo", "Voo")
                         .WithMany()
-                        .HasForeignKey("VooId");
+                        .HasForeignKey("VooId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Classe");
 

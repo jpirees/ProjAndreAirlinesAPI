@@ -11,23 +11,22 @@ namespace ProjAndreAirlinesAPI.Service
     {
         public static async Task<Endereco> ConsultarCep(string cep)
         {
-            using (var client = new HttpClient())
+            using var client = new HttpClient();
+
+            try
             {
-                try
-                {
-                    client.BaseAddress = new System.Uri("https://viacep.com.br/");
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(
-                        new MediaTypeWithQualityHeaderValue("application/json"));
+                client.BaseAddress = new System.Uri("https://viacep.com.br/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/json"));
 
-                    var response = await client.GetAsync($"ws/{cep}/json/");
+                var response = await client.GetAsync($"ws/{cep}/json/");
 
-                    return await response.Content.ReadFromJsonAsync<Endereco>();
-                }
-                catch (HttpRequestException exception)
-                {
-                    throw new HttpRequestException("Exception: " + exception.Message);
-                }
+                return await response.Content.ReadFromJsonAsync<Endereco>();
+            }
+            catch (HttpRequestException exception)
+            {
+                throw new HttpRequestException("Exception: " + exception.Message);
             }
         }
     }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjAndreAirlinesAPI.Model;
 using ProjAndreAirlinesAPI.Data;
+using ProjAndreAirlinesAPI.Service;
 
 namespace ProjAndreAirlinesAPI.Controllers
 {
@@ -80,7 +81,23 @@ namespace ProjAndreAirlinesAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Aeroporto>> PostAeroporto(Aeroporto aeroporto)
         {
+            var aeroportoExiste = await _context.Aeroporto.Where(aeroportoBD => aeroportoBD.Sigla.Equals(aeroporto.Sigla))
+                                                          .FirstOrDefaultAsync() ;
+
+            if (aeroportoExiste != null)
+                throw new Exception("Aeroporto já cadastrado");
+
+            Endereco endereco = await ViaCepService.ConsultarCep(aeroporto.Endereco.Cep);
+
+            if (endereco != null)
+            {
+                endereco.Cep = endereco.Cep.Replace("-", "");
+                endereco.Numero = aeroporto.Endereco.Numero;
+                aeroporto.Endereco = endereco;
+            }
+
             _context.Aeroporto.Add(aeroporto);
+
             try
             {
                 await _context.SaveChangesAsync();
