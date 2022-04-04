@@ -24,10 +24,5 @@ namespace Model
         public virtual Endereco Endereco { get; set; }
 
         public Passageiro() { }
-
-        public override string ToString()
-        {
-            return $"{Cpf} {Nome} {DataNasc:dd/MM/yyyy} {Email} {Telefone} {Endereco}";
-        }
     }
 }

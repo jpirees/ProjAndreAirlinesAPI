@@ -22,8 +22,8 @@ namespace Model
         [JsonProperty("Localidade")]
         public string Localidade { get; set; }
 
-        [JsonProperty("Estado")]
-        public string Estado { get; set; }
+        [JsonProperty("Uf")]
+        public string Uf { get; set; }
 
         [JsonProperty("Pais")]
         public string Pais { get; set; }
@@ -32,11 +32,5 @@ namespace Model
         public string Complemento { get; set; }
 
         public Endereco() { }
-
-
-        public override string ToString()
-        {
-            return $"{Cep} {Logradouro} {Numero} {Bairro} {Localidade} {Estado} {Pais} {Complemento}";
-        }
     }
 }

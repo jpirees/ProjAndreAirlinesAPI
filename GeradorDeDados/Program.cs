@@ -1,41 +1,101 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using File;
 using GeradorDeDados.Service;
-using Model;
 
 namespace GeradorDeDados
 {
     internal class Program
     {
-
         public static void Main(string[] args)
         {
             CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("pt-BR");
-            RunAsync().Wait();
+
+            string opcao;
+
+            do
+            {
+                switch (opcao = Menu())
+                {
+                    case "0": break;
+
+                    case "1":
+                        Console.Clear();
+                        break;
+
+                    case "2":
+                        GerarRelatorios();
+                        break;
+
+                    default:
+                        Console.WriteLine("Opção inválida");
+                        break;
+                }
+
+            } while (opcao != "0");
         }
 
-        public static async Task RunAsync()
+        private static void GerarRelatorios()
         {
-            var caminho = @"C:\Users\Junior\Desktop\dados.json";
+            string opcao;
 
-            Console.WriteLine("Extraindo dados e adicionando no banco...");
+            do
+            {
+                switch (opcao = OpcoesRelatorios())
+                {
+                    case "0":
+                        Environment.Exit(0);
+                        break;
 
-            await AdicionarNoBanco(ReadFile.ExtrairDados(caminho));
+                    case "1":
+                        Console.Clear();
+                        Console.WriteLine("Relatório indisponível.");
+                        Console.ReadKey();
+                        break;
 
-            Console.WriteLine("Adicionado com sucesso");
+                    case "2":
+                        Console.Clear();
+                        Console.WriteLine("Informe um mês de 1 a 12");
+                        _ = int.TryParse(Console.ReadLine(), out int mes);
+
+                        Console.Clear();
+
+                        Console.WriteLine($"Gerando relatório do mês {mes}");
+                        _ = AndreAirlinesApiService.GerarRelatorioPassagens(mes);
+                        Console.WriteLine("Relatório gerado.");
+                        Console.ReadKey();
+                        break;
+
+                    default:
+                        Console.WriteLine("Opção inválida");
+                        break;
+                }
+
+
+            } while (opcao != "0");
+
+            return;
         }
-
-        public async static Task AdicionarNoBanco(List<Passagem> passagens)
+        
+        public static string Menu()
         {
-            foreach (var passagem in passagens)
-                await AndreAirlinesApiService.CadadastrarVoo(passagem);
+            Console.Clear();
+            Console.WriteLine("---------- Menu ----------");
+            Console.WriteLine("1. Extrair dados");
+            Console.WriteLine("2. Relatórios");
+            Console.WriteLine("0. Relatórios");
+
+            return Console.ReadLine();
         }
+
+        private static string OpcoesRelatorios()
+        {
+            Console.Clear();
+            Console.WriteLine("1. Relatório de Preços Bases");
+            Console.WriteLine("2. Relatório de Passagens");
+            Console.WriteLine("0. Voltar");
+
+            return Console.ReadLine();
+        }
+
     }
 }
